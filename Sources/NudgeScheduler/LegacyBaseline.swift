@@ -18,8 +18,9 @@ enum LegacyBaseline {
                 }
             }
         }
-        return Array(out.enumerated().sorted { ($1.element.priority, $0.offset) < ($0.element.priority, $1.offset) }
-            .map(\.element).prefix(fixedCap))
+        return Array(
+            out.enumerated().sorted { ($1.element.priority, $0.offset) < ($0.element.priority, $1.offset) }
+                .map(\.element).prefix(fixedCap))
     }
 
     /// Spreads deliveries from the end of quiet hours to the start of quiet hours on the same

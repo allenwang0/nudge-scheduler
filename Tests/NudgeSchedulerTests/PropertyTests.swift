@@ -33,7 +33,9 @@ struct PropertyTests {
 
     @Test("Every 15-minute instant across both DST days, for the default and a non-wrapping window")
     func dstGrid() throws {
-        for quiet in [try QuietHours(startHour: 22, endHour: 8), try QuietHours(startHour: 1, endHour: 7), try QuietHours(startHour: 2, endHour: 3)] {
+        for quiet in [
+            try QuietHours(startHour: 22, endHour: 8), try QuietHours(startHour: 1, endHour: 7), try QuietHours(startHour: 2, endHour: 3),
+        ] {
             for now in Self.dstInstants {
                 let dates = DeliveryPlanner.dates(count: 10, now: now, quietHours: quiet, calendar: losAngeles)
                 try #require(dates.count == 10)
