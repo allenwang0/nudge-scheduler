@@ -20,7 +20,7 @@ jobs:
       - name: Test
         run: swift test
       - name: Build for iOS
-        run: xcodebuild build -scheme NudgeScheduler -destination 'generic/platform=iOS Simulator' -quiet
+        run: swift build --product NudgeScheduler --triple arm64-apple-ios16.0-simulator --sdk "$(xcrun --sdk iphonesimulator --show-sdk-path)"
       - name: Simulation report
         run: swift run -c release nudge-sim --seed 42 --out "$RUNNER_TEMP/site"
       - name: Committed results match a fresh run
