@@ -30,17 +30,22 @@ func fail(_ message: String) -> Never {
 }
 
 func gitHead() -> String {
-    let p = Process()
-    p.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-    p.arguments = ["git", "rev-parse", "HEAD"]
-    let pipe = Pipe()
-    p.standardOutput = pipe
-    do { try p.run() } catch { fail("cannot run git: \(error)") }
-    p.waitUntilExit()
-    let sha = String(decoding: pipe.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
-        .trimmingCharacters(in: .whitespacesAndNewlines)
-    guard p.terminationStatus == 0, sha.count == 40 else { fail("git rev-parse HEAD failed; run from the repo") }
-    return sha
+    // Process is macOS-only; older SwiftPM compiles this target for iOS too.
+    #if os(macOS)
+        let p = Process()
+        p.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+        p.arguments = ["git", "rev-parse", "HEAD"]
+        let pipe = Pipe()
+        p.standardOutput = pipe
+        do { try p.run() } catch { fail("cannot run git: \(error)") }
+        p.waitUntilExit()
+        let sha = String(decoding: pipe.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        guard p.terminationStatus == 0, sha.count == 40 else { fail("git rev-parse HEAD failed; run from the repo") }
+        return sha
+    #else
+        fail("nudge-sim runs on macOS only")
+    #endif
 }
 
 let options = parse(CommandLine.arguments)
