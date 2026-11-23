@@ -10,9 +10,9 @@
 <meta name="theme-color" content="#0b0b0b" media="(prefers-color-scheme: dark)">
 <script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="kit/report.css">
-<style>:root{--ns-inner:#1baf7a;--ns-close:#c2449a;--ns-outer:#eda100;--ns-quiet:#ececf0}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ns-inner:#199e70;--ns-close:#c255b0;--ns-outer:#c98500;--ns-quiet:#2c2c2e}}
-:root[data-theme="dark"]{--ns-inner:#199e70;--ns-close:#c255b0;--ns-outer:#c98500;--ns-quiet:#2c2c2e}
+<style>:root{--ns-inner:var(--series-3);--ns-close:#c2449a;--ns-outer:var(--series-4);--ns-quiet:#ececf0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ns-close:#c255b0;--ns-quiet:#2c2c2e}}
+:root[data-theme="dark"]{--ns-close:#c255b0;--ns-quiet:#2c2c2e}
 .hero .ratio .fig{white-space:nowrap}
 .hb-unit{font-size:.4em;color:var(--ink-2);font-weight:600;vertical-align:middle}
 .hb-pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:8px}
@@ -22,9 +22,7 @@
 .ns-col text{font-family:var(--font-sans);fill:var(--ink-3);font-size:var(--fs-tick);font-variant-numeric:tabular-nums}
 .ns-pick{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:24px;font-size:15px;font-weight:600}
 .ns-pick select{font:inherit;font-weight:500;min-height:44px;padding:0 12px;border-radius:var(--radius-input);border:1px solid var(--hairline);background:var(--surface-1);color:var(--ink-1)}
-h1,h2,h3{overflow-wrap:break-word}
-/* Kit charts.js never draws narrower than 260 px; keep the figure's inner width above that at 320 px. */
-@media (max-width:359px){.figure{padding-left:12px;padding-right:12px}}</style>
+h1,h2,h3{overflow-wrap:break-word}</style>
 <script src="kit/report.js" defer></script>
 <script src="kit/charts.js" defer></script>
 </head>
@@ -56,8 +54,8 @@ h1,h2,h3{overflow-wrap:break-word}
       <div class="fig-head"><div><h3 id="f-cmp-h">Every ring's worst case falls from weeks to days</h3><p class="sub">Longest wait (days), including episodes still open at year end · seed 42 · cap 3 · quiet 22:00–08:00</p></div></div>
       <div id="cmp-plot"></div><div id="cmp-table" hidden></div>
       <div class="toolbar"><div class="seg" role="radiogroup" aria-label="View" data-ns-view><button role="radio" aria-checked="true" data-value="chart">Chart</button><button role="radio" aria-checked="false" data-value="table">Table</button></div></div>
-    </figure>
     <figcaption>Wait is days from the first overdue day to the first nudge. The table also gives the number of overdue episodes never nudged by year end. Inner, close and outer friends are due every 10, 20 and 40 days.</figcaption>
+    </figure>
     <p class="caveat"><b>One seed, rebuilt baseline.</b> This comparison is a single simulated year (seed 42), and the old rules were re-implemented from a description, not the original code. Read it as a check of the rules, not a measurement of the old app.</p>
   </section>
 
@@ -73,8 +71,8 @@ h1,h2,h3{overflow-wrap:break-word}
       </div>
       <div id="q-table" hidden></div>
       <div class="toolbar"><div class="seg" role="radiogroup" aria-label="View" data-ns-view><button role="radio" aria-checked="true" data-value="chart">Chart</button><button role="radio" aria-checked="false" data-value="table">Table</button></div></div>
-    </figure>
     <figcaption>Bars count deliveries by local hour; the shaded band is the quiet window. Both panels share one y axis. The old rules send fewer nudges in the year (244 against 638), so compare shares, not bar heights.</figcaption>
+    </figure>
   </section>
 
   <section class="s wrap" id="cap" aria-labelledby="h-cap">
@@ -89,8 +87,8 @@ h1,h2,h3{overflow-wrap:break-word}
       </div>
       <div id="cap-table" hidden></div>
       <div class="toolbar"><div class="seg" role="radiogroup" aria-label="View" data-ns-view><button role="radio" aria-checked="true" data-value="chart">Chart</button><button role="radio" aria-checked="false" data-value="table">Table</button></div></div>
-    </figure>
     <figcaption>p90 wait: 90&#8239;% of overdue episodes, pooled across all seeds, were nudged within this many days. Nudges per day is the mean over seeds, from 1.00 at cap 1. No per-seed spread is shown.</figcaption>
+    </figure>
   </section>
 
   <section class="s wrap" id="explore" aria-labelledby="h-explore">
@@ -106,8 +104,8 @@ h1,h2,h3{overflow-wrap:break-word}
       </div>
       <div id="x-table" hidden></div>
       <div class="toolbar"><div class="seg" role="radiogroup" aria-label="View" data-ns-view><button role="radio" aria-checked="true" data-value="chart">Chart</button><button role="radio" aria-checked="false" data-value="table">Table</button></div></div>
-    </figure>
     <figcaption>Left: each line runs from the median wait (filled dot) to the longest (end of line); the ring marks p90. Right: deliveries per local hour over the year. One simulated year at seed 42.</figcaption>
+    </figure>
   </section>
 
   <section class="s wrap" id="method" aria-labelledby="h-method">
@@ -135,11 +133,11 @@ swift run -c release nudge-sim --seed 42 --out site   # about 55 s</code></pre><
     <p style="margin-top:12px;font-size:14px;color:var(--ink-3)">Needs Swift 6 (Xcode 16 or later). No dependencies. Raw output: <a href="results.json" style="text-decoration:underline">results.json</a>.</p>
     <details>
       <summary>Simulation settings · 10 rows</summary>
-      <div class="tablewrap" tabindex="0" role="region" aria-label="Simulation settings"><table><thead><tr><th scope="col">Setting</th><th scope="col">Value</th></tr></thead><tbody><tr><th scope="row">Seed (comparison, cap views)</th><td>42</td></tr><tr><th scope="row">Seeds (cap sweep)</th><td>42–61</td></tr><tr><th scope="row">Simulated span</th><td>365 days of 2026, America/Los_Angeles</td></tr><tr><th scope="row">Contacts</th><td>40 invented (5 inner, 10 close, 15 outer, 10 distant)</td></tr><tr><th scope="row">Reply probability</th><td>0.6</td></tr><tr><th scope="row">Default quiet hours</th><td>22:00–08:00</td></tr><tr><th scope="row">Stress quiet hours</th><td>01:00–07:00</td></tr><tr><th scope="row">Old rules</th><td>hard cap 3, drift priority capped at 80, no per-contact dedupe, snoozes never expire, same-day window arithmetic</td></tr><tr><th scope="row">Generated from commit</th><td>78b8bd158c1d</td></tr><tr><th scope="row">Data</th><td>site/results.json</td></tr></tbody></table></div>
+      <div class="tablewrap" tabindex="0" role="region" aria-label="Simulation settings"><table><thead><tr><th scope="col">Setting</th><th scope="col">Value</th></tr></thead><tbody><tr><th scope="row">Seed (comparison, cap views)</th><td>42</td></tr><tr><th scope="row">Seeds (cap sweep)</th><td>42–61</td></tr><tr><th scope="row">Simulated span</th><td>365 days of 2026, America/Los_Angeles</td></tr><tr><th scope="row">Contacts</th><td>40 invented (5 inner, 10 close, 15 outer, 10 distant)</td></tr><tr><th scope="row">Reply probability</th><td>0.6</td></tr><tr><th scope="row">Default quiet hours</th><td>22:00–08:00</td></tr><tr><th scope="row">Stress quiet hours</th><td>01:00–07:00</td></tr><tr><th scope="row">Old rules</th><td>hard cap 3, drift priority capped at 80, no per-contact dedupe, snoozes never expire, same-day window arithmetic</td></tr><tr><th scope="row">Generated from commit</th><td>f6339da09f09</td></tr><tr><th scope="row">Data</th><td>site/results.json</td></tr></tbody></table></div>
     </details>
   </section>
 </main>
-<footer><div class="wrap"><span><a href="https://allenwang0.github.io/">← Allen Wang</a><a href="https://github.com/allenwang0/nudge-scheduler">Code ↗</a></span><span>Generated from commit <span class="mono">78b8bd1</span> · seed 42</span></div></footer>
+<footer><div class="wrap"><span><a href="https://allenwang0.github.io/">← Allen Wang</a><a href="https://github.com/allenwang0/nudge-scheduler">Code ↗</a></span><span>Data from commit <span class="mono">f6339da</span> · seed 42</span></div></footer>
 <script type="application/json" id="ns-data">{"caps":[{"cap":1,"deliveries":364,"hours":[0,0,0,0,0,0,0,0,166,12,15,17,13,18,11,19,15,14,20,13,21,10,0,0],"inside":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"perDay":0.997,"quiet":[1320,480],"rings":[{"episodes":76,"max":21,"median":8,"never":0,"p90":17,"ring":"inner"},{"episodes":95,"max":23,"median":10,"never":3,"p90":18,"ring":"close"},{"episodes":87,"max":30,"median":11,"never":1,"p90":19,"ring":"outer"}],"violations":0},{"cap":2,"deliveries":584,"hours":[0,0,0,0,0,0,0,0,156,13,12,15,18,11,16,138,34,41,35,38,36,21,0,0],"inside":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"perDay":1.6,"quiet":[1320,480],"rings":[{"episodes":109,"max":6,"median":0,"never":0,"p90":3,"ring":"inner"},{"episodes":126,"max":5,"median":1,"never":0,"p90":3,"ring":"close"},{"episodes":105,"max":6,"median":1,"never":0,"p90":3,"ring":"outer"}],"violations":0},{"cap":3,"deliveries":608,"hours":[0,0,0,0,0,0,0,0,157,17,11,9,65,17,10,71,34,75,31,37,41,33,0,0],"inside":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"perDay":1.666,"quiet":[1320,480],"rings":[{"episodes":114,"max":2,"median":0,"never":0,"p90":0,"ring":"inner"},{"episodes":119,"max":3,"median":0,"never":0,"p90":1,"ring":"close"},{"episodes":101,"max":4,"median":0,"never":0,"p90":1,"ring":"outer"}],"violations":0},{"cap":4,"deliveries":649,"hours":[0,0,0,0,0,0,0,0,154,14,10,30,60,11,21,89,25,69,62,41,40,23,0,0],"inside":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"perDay":1.778,"quiet":[1320,480],"rings":[{"episodes":104,"max":4,"median":0,"never":0,"p90":0,"ring":"inner"},{"episodes":125,"max":3,"median":0,"never":0,"p90":1,"ring":"close"},{"episodes":103,"max":2,"median":0,"never":0,"p90":0,"ring":"outer"}],"violations":0},{"cap":5,"deliveries":622,"hours":[0,0,0,0,0,0,0,0,150,11,13,28,37,29,12,88,24,53,54,40,46,37,0,0],"inside":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"perDay":1.704,"quiet":[1320,480],"rings":[{"episodes":121,"max":2,"median":0,"never":0,"p90":0,"ring":"inner"},{"episodes":120,"max":1,"median":0,"never":0,"p90":0,"ring":"close"},{"episodes":102,"max":4,"median":0,"never":0,"p90":0,"ring":"outer"}],"violations":0},{"cap":6,"deliveries":632,"hours":[0,0,0,0,0,0,0,0,146,9,21,17,41,24,13,76,43,60,46,64,47,25,0,0],"inside":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"perDay":1.732,"quiet":[1320,480],"rings":[{"episodes":116,"max":0,"median":0,"never":0,"p90":0,"ring":"inner"},{"episodes":121,"max":1,"median":0,"never":0,"p90":0,"ring":"close"},{"episodes":102,"max":1,"median":0,"never":0,"p90":0,"ring":"outer"}],"violations":0},{"cap":7,"deliveries":618,"hours":[0,0,0,0,0,0,0,0,143,14,10,32,44,20,19,86,31,49,65,37,44,24,0,0],"inside":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"perDay":1.693,"quiet":[1320,480],"rings":[{"episodes":113,"max":1,"median":0,"never":0,"p90":0,"ring":"inner"},{"episodes":123,"max":0,"median":0,"never":0,"p90":0,"ring":"close"},{"episodes":105,"max":5,"median":0,"never":0,"p90":0,"ring":"outer"}],"violations":0},{"cap":8,"deliveries":649,"hours":[0,0,0,0,0,0,0,0,152,17,19,21,52,22,15,88,32,63,46,58,43,21,0,0],"inside":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"perDay":1.778,"quiet":[1320,480],"rings":[{"episodes":103,"max":1,"median":0,"never":0,"p90":0,"ring":"inner"},{"episodes":117,"max":0,"median":0,"never":0,"p90":0,"ring":"close"},{"episodes":102,"max":1,"median":0,"never":0,"p90":0,"ring":"outer"}],"violations":0},{"cap":9,"deliveries":635,"hours":[0,0,0,0,0,0,0,0,146,8,23,19,42,25,19,77,43,59,44,52,45,33,0,0],"inside":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"perDay":1.74,"quiet":[1320,480],"rings":[{"episodes":119,"max":5,"median":0,"never":0,"p90":0,"ring":"inner"},{"episodes":120,"max":1,"median":0,"never":0,"p90":0,"ring":"close"},{"episodes":104,"max":0,"median":0,"never":0,"p90":0,"ring":"outer"}],"violations":0},{"cap":10,"deliveries":629,"hours":[0,0,0,0,0,0,0,0,129,16,21,22,39,17,20,81,38,56,60,56,47,27,0,0],"inside":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"perDay":1.723,"quiet":[1320,480],"rings":[{"episodes":115,"max":0,"median":0,"never":0,"p90":0,"ring":"inner"},{"episodes":118,"max":2,"median":0,"never":0,"p90":0,"ring":"close"},{"episodes":100,"max":0,"median":0,"never":0,"p90":0,"ring":"outer"}],"violations":0}],"defaultCap":3,"legacy":{"cap":3,"deliveries":238,"hours":[0,0,0,0,0,0,0,0,62,5,7,6,21,6,8,24,17,26,13,9,14,18,2,0],"inside":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0],"perDay":0.652,"quiet":[1320,480],"rings":[{"episodes":70,"max":48,"median":0,"never":4,"p90":0,"ring":"inner"},{"episodes":83,"max":80,"median":0,"never":3,"p90":1,"ring":"close"},{"episodes":71,"max":54,"median":0,"never":2,"p90":1,"ring":"outer"}],"violations":2},"night":{"cap":3,"deliveries":638,"hours":[25,0,0,0,0,0,0,106,9,6,15,9,20,52,22,23,67,25,23,72,45,43,41,35],"inside":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"perDay":1.748,"quiet":[60,420],"rings":[{"episodes":116,"max":3,"median":0,"never":0,"p90":1,"ring":"inner"},{"episodes":115,"max":5,"median":0,"never":0,"p90":1,"ring":"close"},{"episodes":104,"max":4,"median":0,"never":0,"p90":2,"ring":"outer"}],"violations":0},"nightLegacy":{"cap":3,"deliveries":244,"hours":[0,0,0,17,48,17,0,162,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"inside":[0,0,0,17,48,17,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"perDay":0.668,"quiet":[60,420],"rings":[{"episodes":79,"max":14,"median":0,"never":4,"p90":0,"ring":"inner"},{"episodes":84,"max":41,"median":0,"never":4,"p90":0,"ring":"close"},{"episodes":69,"max":219,"median":0,"never":9,"p90":0,"ring":"outer"}],"violations":82},"pooled":[{"cap":1,"episodes":[1578,1851,1722],"max":[30,39,37],"never":[35,44,57],"p90":[17,18,20],"perDay":0.997},{"cap":2,"episodes":[2190,2357,1922],"max":[9,10,12],"never":[4,5,9],"p90":[3,3,4],"perDay":1.61},{"cap":3,"episodes":[2269,2409,1936],"max":[6,5,5],"never":[0,1,2],"p90":[1,1,1],"perDay":1.695},{"cap":4,"episodes":[2263,2397,2005],"max":[4,6,5],"never":[1,0,0],"p90":[0,0,1],"perDay":1.71},{"cap":5,"episodes":[2311,2409,2006],"max":[6,5,5],"never":[0,0,1],"p90":[0,0,0],"perDay":1.725},{"cap":6,"episodes":[2246,2389,1960],"max":[5,6,6],"never":[0,0,0],"p90":[0,0,0],"perDay":1.718},{"cap":7,"episodes":[2286,2380,1998],"max":[7,6,7],"never":[0,0,0],"p90":[0,0,0],"perDay":1.725},{"cap":8,"episodes":[2272,2408,1996],"max":[5,5,7],"never":[0,0,0],"p90":[0,0,0],"perDay":1.746},{"cap":9,"episodes":[2298,2406,2017],"max":[6,5,7],"never":[0,0,0],"p90":[0,0,0],"perDay":1.739},{"cap":10,"episodes":[2268,2405,1991],"max":[6,6,6],"never":[0,0,0],"p90":[0,0,0],"perDay":1.724}],"rings":["inner","close","outer"],"seed":42,"sweepSeeds":20}</script>
 <script>addEventListener("DOMContentLoaded", function () {
   var D = RK.data("ns-data"), RC = ["var(--ns-inner)", "var(--ns-close)", "var(--ns-outer)"];

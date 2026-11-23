@@ -254,8 +254,8 @@ enum Report {
                   <div class="fig-head"><div><h3 id="f-cmp-h">Every ring's worst case falls from weeks to days</h3><p class="sub">Longest wait (days), including episodes still open at year end · seed \#(r.seed) · cap \#(r.defaultCap) · quiet \#(window(main))</p></div></div>
                   <div id="cmp-plot"></div><div id="cmp-table" hidden></div>
                   <div class="toolbar">\#(viewToggle)</div>
-                </figure>
                 <figcaption>Wait is days from the first overdue day to the first nudge. The table also gives the number of overdue episodes never nudged by year end. Inner, close and outer friends are due every 10, 20 and 40 days.</figcaption>
+                </figure>
                 <p class="caveat"><b>One seed, rebuilt baseline.</b> This comparison is a single simulated year (seed \#(r.seed)), and the old rules were re-implemented from a description, not the original code. Read it as a check of the rules, not a measurement of the old app.</p>
               </section>
 
@@ -271,8 +271,8 @@ enum Report {
                   </div>
                   <div id="q-table" hidden></div>
                   <div class="toolbar">\#(viewToggle)</div>
-                </figure>
                 <figcaption>Bars count deliveries by local hour; the shaded band is the quiet window. Both panels share one y axis. The old rules send fewer nudges in the year (\#(nightOld.deliveries.count) against \#(night.deliveries.count)), so compare shares, not bar heights.</figcaption>
+                </figure>
               </section>
 
               <section class="s wrap" id="cap" aria-labelledby="h-cap">
@@ -287,8 +287,8 @@ enum Report {
                   </div>
                   <div id="cap-table" hidden></div>
                   <div class="toolbar">\#(viewToggle)</div>
-                </figure>
                 <figcaption>p90 wait: 90&#8239;% of overdue episodes, pooled across all seeds, were nudged within this many days. Nudges per day is the mean over seeds, from \#(perDayOne) at cap 1. No per-seed spread is shown.</figcaption>
+                </figure>
               </section>
 
               <section class="s wrap" id="explore" aria-labelledby="h-explore">
@@ -304,8 +304,8 @@ enum Report {
                   </div>
                   <div id="x-table" hidden></div>
                   <div class="toolbar">\#(viewToggle)</div>
-                </figure>
                 <figcaption>Left: each line runs from the median wait (filled dot) to the longest (end of line); the ring marks p90. Right: deliveries per local hour over the year. One simulated year at seed \#(r.seed).</figcaption>
+                </figure>
               </section>
 
               <section class="s wrap" id="method" aria-labelledby="h-method">
@@ -337,7 +337,7 @@ enum Report {
                 </details>
               </section>
             </main>
-            <footer><div class="wrap"><span><a href="\#(hub)">← Allen Wang</a><a href="\#(repo)">Code ↗</a></span><span>Generated from commit <span class="mono">\#(String(sha.prefix(7)))</span> · seed \#(r.seed)</span></div></footer>
+            <footer><div class="wrap"><span><a href="\#(hub)">← Allen Wang</a><a href="\#(repo)">Code ↗</a></span><span>Data from commit <span class="mono">\#(String(sha.prefix(7)))</span> · seed \#(r.seed)</span></div></footer>
             <script type="application/json" id="ns-data">\#(json(r))</script>
             <script>\#(script)</script>
             </body>
@@ -357,9 +357,9 @@ enum Report {
     // Aqua, magenta and yellow pass the dataviz palette validator (all pairs, light and dark);
     // yellow is below 3:1 on white, so every chart has a table view.
     static let css = #"""
-        :root{--ns-inner:#1baf7a;--ns-close:#c2449a;--ns-outer:#eda100;--ns-quiet:#ececf0}
-        @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ns-inner:#199e70;--ns-close:#c255b0;--ns-outer:#c98500;--ns-quiet:#2c2c2e}}
-        :root[data-theme="dark"]{--ns-inner:#199e70;--ns-close:#c255b0;--ns-outer:#c98500;--ns-quiet:#2c2c2e}
+        :root{--ns-inner:var(--series-3);--ns-close:#c2449a;--ns-outer:var(--series-4);--ns-quiet:#ececf0}
+        @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ns-close:#c255b0;--ns-quiet:#2c2c2e}}
+        :root[data-theme="dark"]{--ns-close:#c255b0;--ns-quiet:#2c2c2e}
         .hero .ratio .fig{white-space:nowrap}
         .hb-unit{font-size:.4em;color:var(--ink-2);font-weight:600;vertical-align:middle}
         .hb-pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:8px}
@@ -370,8 +370,6 @@ enum Report {
         .ns-pick{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:24px;font-size:15px;font-weight:600}
         .ns-pick select{font:inherit;font-weight:500;min-height:44px;padding:0 12px;border-radius:var(--radius-input);border:1px solid var(--hairline);background:var(--surface-1);color:var(--ink-1)}
         h1,h2,h3{overflow-wrap:break-word}
-        /* Kit charts.js never draws narrower than 260 px; keep the figure's inner width above that at 320 px. */
-        @media (max-width:359px){.figure{padding-left:12px;padding-right:12px}}
         """#
 
     static let script = #"""
