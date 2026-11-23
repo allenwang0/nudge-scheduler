@@ -10,9 +10,26 @@ struct SweepPoint: Encodable {
         let neverNudged: Int
     }
 
+    /// The three drift rings together.
+    struct WaitStats: Encodable {
+        let p90Wait: Int
+        let maxWait: Int
+
+        init(_ waits: [SimulationResult.Wait]) {
+            let days = waits.map(\.days).sorted()
+            p90Wait = days.isEmpty ? 0 : days[Int((0.9 * Double(days.count)).rounded(.up)) - 1]
+            maxWait = days.last ?? 0
+        }
+    }
+
     let cap: Int
     let rings: [RingStats]
     let meanNudgesPerDay: Double
+    /// Drift-ring waits pooled over all seeds, and the same statistics for each seed alone.
+    let allDrift: WaitStats
+    let perSeed: [WaitStats]
+    let deliveries: Int
+    let quietHourViolations: Int
 
     init(cap: Int, runs: [SimulationResult]) {
         self.cap = cap
@@ -26,6 +43,11 @@ struct SweepPoint: Encodable {
                 neverNudged: waits.filter(\.censored).count)
         }
         meanNudgesPerDay = (runs.map(\.meanNudgesPerDay).reduce(0, +) / Double(runs.count) * 1000).rounded() / 1000
+        let drift = { (r: SimulationResult) in r.waits.filter { Results.driftRings.contains($0.ring) } }
+        allDrift = WaitStats(runs.flatMap(drift))
+        perSeed = runs.map { WaitStats(drift($0)) }
+        deliveries = runs.map(\.deliveries.count).reduce(0, +)
+        quietHourViolations = runs.map(\.quietHourViolations).reduce(0, +)
     }
 
     func stats(_ ring: Ring) -> RingStats { rings.first { $0.ring == ring }! }
