@@ -30,17 +30,10 @@ HOME_URL = "https://allenwang0.github.io/"
 RINGS = ["inner", "close", "outer"]  # drift rings, Ring rawValue 0, 1, 2
 README_START = "<!-- results:start -->"
 README_END = "<!-- results:end -->"
-THIN = " "
 EN = "–"
 
-# Local styles the kit does not have yet (listed as kit requests): an inline
-# table of contents for Tier B reports and two-row chart labels.
+# Local styles the kit does not have yet (listed as kit requests): two-row chart labels.
 LOCAL_CSS = """
-.toc { margin-top: calc(-1 * var(--space-5)); }
-.toc ol { display: flex; flex-wrap: wrap; gap: 0 var(--space-5); margin: 0; padding: var(--space-4) 0 0;
-  border-top: 1px solid var(--border); list-style: none; font-size: var(--fs-small); }
-.toc a { display: inline-flex; align-items: center; min-height: 44px; color: var(--text-2); text-decoration: none; }
-.toc a:hover { color: var(--text); }
 .c-band-accent { fill: var(--accent); fill-opacity: .16; }
 """
 
@@ -187,7 +180,7 @@ def derive(r, facts):
 
 
 def days(n):
-    return "1 day" if n == 1 else f"{n} days"
+    return rk.num(n, "day" if n == 1 else "days")
 
 
 def count(n):
@@ -370,10 +363,10 @@ def evidence_rows(d, facts, src_sha, res_sha):
                f"({d['seeds']} seeds × caps {d['caps'][0]}{EN}{d['caps'][-1]}), {count(d['pooled_violations'])} inside quiet hours",
          "site/results.json: pooledSweep[].deliveries, quietHourViolations", res, "Measured"),
         ("E3", f"All {d['pairs']} quiet-hour start/end hour pairs, {d['plans_per_pair']} delivery plans each, "
-               f"timed within {facts['dst_days']} days of both 2026 clock changes",
+               f"timed within {rk.num(facts['dst_days'], 'days')} of both 2026 clock changes",
          f"{prop}:{inv[0]}{EN}{inv[1]}", blob(prop, src_sha, *inv), "Test"),
         ("E4", f"Cap {d['cap']}: p90 wait {days(d['p90'])}, longest {days(d['max'])}, pooled over {d['seeds']} seeds; "
-               f"per-seed longest {span(d['seed_max_lo'], d['seed_max_hi'])} days",
+               f"per-seed longest {rk.num(span(d['seed_max_lo'], d['seed_max_hi']), 'days')}",
          f"site/results.json: pooledSweep; computed in Sources/nudge-sim/Results.swift:{sweep[0]}{EN}{sweep[1]}", res,
          "Measured"),
         ("E5", "The same seed gives byte-identical results; CI compares a fresh run with the committed file",
@@ -395,11 +388,6 @@ def evidence_rows(d, facts, src_sha, res_sha):
          f"Sources/NudgeScheduler/Simulation.swift:{sim[0]}{EN}{sim[1]}",
          blob("Sources/NudgeScheduler/Simulation.swift", src_sha, *sim), "Code"),
     ]
-
-
-def toc(items):
-    lis = rk.join(Raw(f'<li>{rk.tag("a", label, href="#" + sid)}</li>') for sid, label in items)
-    return Raw(f'<nav class="toc wrap" aria-label="Contents"><ol>{lis}</ol></nav>')
 
 
 def build_page(r, run, results_sha=None):
@@ -435,7 +423,7 @@ def build_page(r, run, results_sha=None):
                         for k, w in (("d", 398), ("t", 640), ("p", 280)))),
     )
 
-    nav = toc([("findings", "Findings"), ("delivery", "Delivery times"), ("legacy", "Legacy rules"),
+    nav = rk.toc([("findings", "Findings"), ("delivery", "Delivery times"), ("legacy", "Legacy rules"),
                ("cap", "Daily cap"), ("how", "How it works"), ("methodology", "Method"),
                ("limitations", "Limits"), ("reproduce", "Reproduce"), ("evidence", "Evidence")])
 
@@ -487,10 +475,10 @@ def build_page(r, run, results_sha=None):
         hist_fig,
         Raw('<div class="prose" style="margin-top:32px">'),
         rk.tag("p", Raw(
-            f"The planner starts {facts['lead']} minutes after the app opens and looks for the next allowed window: from "
+            f"The planner starts {rk.num(facts['lead'], 'minutes')} after the app opens and looks for the next allowed window: from "
             f"the end of quiet hours to the next start. That window ends the same day only when quiet hours wrap "
             f"midnight, like {window(main)}; otherwise it runs into the next day.{R('E8')} Reminders are spread evenly "
-            f"across what is left of it, at least {facts['spacing']} minutes apart when there is room.")),
+            f"across what is left of it, at least {rk.num(facts['spacing'], 'minutes')} apart when there is room.")),
         rk.tag("p", Raw(
             f"The legacy rules always spread reminders from the end of quiet hours to the start on the same calendar "
             f"day.{R('E7')} With quiet hours {window(nl)}, that runs backwards from {hhmm(nl['quietEndMinute'])} to "
@@ -522,7 +510,7 @@ def build_page(r, run, results_sha=None):
             f"The package also sends {d['volume']:.1f}× as many reminders per day ({night['meanNudgesPerDay']:.2f} vs "
             f"{nl['meanNudgesPerDay']:.2f} with quiet hours {window(night)}), so raw counts are not comparable; the "
             f"share inside quiet hours is. The legacy rules cap drift priority lower (bonus up to "
-            f"{facts['legacy_bonus']} days instead of {facts['drift_bonus']}), never expire snoozes and do not dedupe "
+            f"{rk.num(facts['legacy_bonus'], 'days')} instead of {facts['drift_bonus']}), never expire snoozes and do not dedupe "
             f"contacts, which is consistent with the episodes they never nudge in the last column.")),
         rk.tag("p", Raw(
             f"The baseline was re-implemented from a description of the old behavior, not from its code, and each row "
@@ -536,9 +524,9 @@ def build_page(r, run, results_sha=None):
     pooled = r["pooledSweep"]
     cap = d["cap"]
     sweep_desc = (f"p90 and longest wait from overdue to first nudge, drift rings pooled over {d['seeds']} seeds, for "
-                  f"caps {d['caps'][0]} to {d['caps'][-1]}. Cap 1: p90 {d['p90_cap1']}, longest {d['max_cap1']} days. "
+                  f"caps {d['caps'][0]} to {d['caps'][-1]}. Cap 1: p90 {d['p90_cap1']}, longest {rk.num(d['max_cap1'], 'days')}. "
                   f"Cap {cap}: p90 {d['p90']}, longest {d['max']}. Caps above {cap}: longest "
-                  f"{span(d['max_above_lo'], d['max_above'])} days.")
+                  f"{rk.num(span(d['max_above_lo'], d['max_above']), 'days')}.")
     sweep_take = (f"Cap {cap} gets 90% of overdue friends a nudge within {days(d['p90'])}; higher caps barely move "
                   f"the longest wait")
     sweep_rows = []
@@ -569,7 +557,7 @@ def build_page(r, run, results_sha=None):
         Raw('<div class="prose" style="margin-top:32px">'),
         rk.tag("p", Raw(
             f"At cap 1 the queue backs up: p90 {days(d['p90_cap1'])}, longest {days(d['max_cap1'])}. From cap {cap} on, "
-            f"the p90 is at most a day and the longest wait stays at {span(d['max_above_lo'], d['max_above'])} days, "
+            f"the p90 is at most a day and the longest wait stays at {rk.num(span(d['max_above_lo'], d['max_above']), 'days')}, "
             f"because the engine already surfaces every overdue friend most days. Volume rises from "
             f"{d['rate_cap1']:.2f} to {d['rate_cap']:.2f} reminders per day between cap 1 and cap {cap}.")),
         Raw("</div>"),
@@ -580,15 +568,15 @@ def build_page(r, run, results_sha=None):
     # How it works
     how = rk.methodology([
         ("Rings", Raw(f"Inner, close and outer friends are due every {facts['cadence']['inner']}, "
-                      f"{facts['cadence']['close']} and {facts['cadence']['outer']} days; distant friends get no drift "
+                      f"{facts['cadence']['close']} and {rk.num(facts['cadence']['outer'], 'days')}; distant friends get no drift "
                       f"reminders.")),
         ("Score", Raw(f"An overdue friend scores {facts['drift_base']} plus one point per overdue day, up to "
                       f"{facts['drift_base'] + facts['drift_bonus']}; a birthday today scores {facts['birthday']}.")),
         ("Pick", Raw("One reminder per friend, sorted by score, kind, ring and id, then cut to the daily cap. Output "
                      "does not depend on input order.")),
         ("Place", Raw(f"<code>DeliveryPlanner</code> spaces the day's reminders inside the next allowed window, never "
-                      f"sooner than {facts['lead']} minutes after now.{R('E8')}")),
-        ("Snooze", Raw(f"A snoozed friend is skipped for {facts['snooze_days']} days, then returns.")),
+                      f"sooner than {rk.num(facts['lead'], 'minutes')} after now.{R('E8')}")),
+        ("Snooze", Raw(f"A snoozed friend is skipped for {rk.num(facts['snooze_days'], 'days')}, then returns.")),
         ("Inputs", Raw("<code>now</code> and <code>calendar</code> are arguments; the package never reads the system "
                        "clock or time zone.")),
     ])
@@ -614,7 +602,7 @@ def build_page(r, run, results_sha=None):
                   f"parameterised ones run every argument"),
         ("Machine", f"{run['machine']}, {run['os']}, {run['swift']}; load average {run['load_average_after_run']} "
                     f"after the run. Output does not depend on the machine."),
-        ("Run time", f"{run['wall_seconds']:.0f} s for the full run"),
+        ("Run time", f"{rk.num(round(run['wall_seconds']), 's')} for the full run"),
         ("Run date", run["date"]),
     ])
     method_sec = rk.section("methodology", "Methodology", method, eyebrow="Conditions")
@@ -637,7 +625,7 @@ def build_page(r, run, results_sha=None):
     steps_html = rk.reproduce([
         (f"Build and run the tests (Swift 6, Xcode 16 or later, macOS; no dependencies). Expect “Test run with "
          f"{facts['tests']} tests”.", "swift build && swift test"),
-        (f"Run the simulation (about {run['wall_seconds']:.0f} s here). It rewrites site/results.json and site/card.json; "
+        (f"Run the simulation (about {rk.num(round(run['wall_seconds']), 's')} here). It rewrites site/results.json and site/card.json; "
          f"with seed {d['seed']} the results file is byte-identical to the committed one.",
          f"swift run -c release nudge-sim --seed {d['seed']} --out site\ngit diff --exit-code site/results.json"),
         ("Rebuild this page and the README block from the results (Python 3.10+, standard library).",

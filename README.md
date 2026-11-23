@@ -11,7 +11,7 @@ A Swift package that decides which friends to remind you to contact, and when to
 <!-- results:start -->
 - **1,246 of 1,246 simulated reminders landed outside quiet hours**: 608 with quiet hours 22:00–08:00 and 638 with 01:00–07:00 (seed 42, cap 3).
 - **Clock changes are tested**: all 576 quiet-hour start/end pairs around both 2026 daylight-saving changes; the same seed gives byte-identical output.
-- **Short waits at the default cap of 3**: 90% of overdue friends get a reminder within 1 day, the longest wait is 6 days (20 seeds pooled).
+- **Short waits at the default cap of 3**: 90% of overdue friends get a reminder within 1 day, the longest wait is 6 days (20 seeds pooled).
 - **Against the old rules** (re-implemented from a description): with quiet hours 01:00–07:00 they put 82 of 244 reminders inside the window; with 22:00–08:00, 2 of 238. The package sends 2.6× as many reminders per day.
 <!-- results:end -->
 
