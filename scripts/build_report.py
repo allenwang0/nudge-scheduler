@@ -642,7 +642,7 @@ def build_page(r, run, results_sha=None):
          f"swift run -c release nudge-sim --seed {d['seed']} --out site\ngit diff --exit-code site/results.json"),
         ("Rebuild this page and the README block from the results (Python 3.10+, standard library).",
          "python3 scripts/build_report.py --readme README.md"),
-        ("Check that the page's numbers match results.json.", "python3 -m unittest discover -s tests -p 'test_*.py'"),
+        ("Check that the page's numbers match results.json.", "python3 -m unittest discover -s scripts -p 'test_*.py'"),
     ])
     repro_sec = rk.section("reproduce", "Reproduce it in four commands", steps_html, eyebrow="Reproduce",
                            intro=Raw(f'Commands run from a clone of <a class="src" href="{REPO_URL}">{REPO}</a>.'))
