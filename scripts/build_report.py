@@ -455,7 +455,7 @@ def build_page(r, run, results_sha=None):
     findings_sec = rk.section("findings", "What the simulation and tests show", findings, eyebrow="Findings")
 
     # Delivery-time histogram
-    hist_desc = (f"Three rows of deliveries per 30 minutes. This package, quiet {window(main)}: "
+    hist_desc = (f"Three rows of deliveries per {rk.num(30, 'minutes')}. This package, quiet {window(main)}: "
                  f"{len(main['deliveries'])} deliveries, {main['quietHourViolations']} inside. This package, quiet "
                  f"{window(night)}: {len(night['deliveries'])}, {night['quietHourViolations']} inside. Legacy rules, quiet "
                  f"{window(nl)}: {len(nl['deliveries'])}, {nl['quietHourViolations']} inside.")
