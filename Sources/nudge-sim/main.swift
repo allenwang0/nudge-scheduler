@@ -85,7 +85,6 @@ let results = Results(
 let outDir = URL(fileURLWithPath: options.out, isDirectory: true)
 try FileManager.default.createDirectory(at: outDir, withIntermediateDirectories: true)
 try Simulation.encode(results).write(to: outDir.appendingPathComponent("results.json"))
-try Report.html(results).write(to: outDir.appendingPathComponent("index.html"), atomically: true, encoding: .utf8)
 let card = Card.make(results, sha: gitHead(), command: "swift run -c release nudge-sim --seed \(options.seed) --out \(options.out)")
 let encoder = JSONEncoder()
 encoder.outputFormatting = [.sortedKeys, .prettyPrinted, .withoutEscapingSlashes]
@@ -104,4 +103,4 @@ print(
 )
 print("  duplicate slots: \(main.duplicateSlots) (legacy \(results.legacy.duplicateSlots))")
 print("  takeaway: \(card.takeaway)")
-print("wrote \(options.out)/index.html, results.json, card.json")
+print("wrote \(options.out)/results.json, card.json; build the report with python3 scripts/build_report.py")

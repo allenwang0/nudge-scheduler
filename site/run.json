@@ -1,0 +1,11 @@
+{
+  "command": "swift run -c release nudge-sim --seed 42 --out site",
+  "code_sha": "548c975ea6631c5725fc6f0e9331c624fb493d05",
+  "date": "2026-11-22",
+  "machine": "Apple M5 Pro",
+  "os": "macOS 27.0.1",
+  "swift": "Apple Swift version 6.4.2",
+  "load_average_after_run": "9.76 7.93 7.09",
+  "wall_seconds": 45.6,
+  "note": "Output is deterministic per seed; machine and load affect only run time."
+}
