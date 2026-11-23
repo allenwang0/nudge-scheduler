@@ -47,7 +47,7 @@ struct Card: Encodable {
         }
         let atOne = r.pooledSweep[0].stats(slow).p90Wait
         let takeaway =
-            "At cap \(r.defaultCap), 90% of \(slow.name)-ring contacts get a nudge within \(days(p90)) of falling overdue; at cap 1, \(days(atOne))."
+            "At cap \(r.defaultCap), 90% of \(slow.name)-ring overdue episodes get a nudge within \(days(p90)); at cap 1, \(days(atOne))."
         precondition(takeaway.count <= 140, "card takeaway over 140 characters: \(takeaway)")
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime]

@@ -150,7 +150,7 @@
   },
   "command" : "swift run -c release nudge-sim --seed 42 --out site",
   "data_note" : "Synthetic: 40 invented contacts per run, seeds 42-61, 365 simulated days each, reply probability 0.6",
-  "generated_at" : "2026-11-12T03:07:12Z",
+  "generated_at" : "2026-11-23T04:46:04Z",
   "metric" : {
     "higher_is_better" : false,
     "label" : "p90 wait from overdue to nudge, slowest ring, cap 3",
@@ -159,6 +159,6 @@
   },
   "repo" : "nudge-scheduler",
   "schema_version" : 1,
-  "sha" : "0bcb6708b9bb0a207e3a2f097464866f830c4797",
-  "takeaway" : "At cap 3, 90% of inner-ring contacts get a nudge within 1 day of falling overdue; at cap 1, 17 days."
+  "sha" : "78b8bd158c1d66404b8f46228deb8bb5ad1693c5",
+  "takeaway" : "At cap 3, 90% of inner-ring overdue episodes get a nudge within 1 day; at cap 1, 17 days."
 }
