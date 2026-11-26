@@ -25,7 +25,31 @@ jobs:
         run: swift run -c release nudge-sim --seed 42 --out "$RUNNER_TEMP/site"
       - name: Committed results match a fresh run
         run: cmp site/results.json "$RUNNER_TEMP/site/results.json"
+      - name: Add the vendored report kit
+        run: cp -R site/kit "$RUNNER_TEMP/site/kit"
       - uses: actions/upload-artifact@v4
         with:
           name: report
           path: ${{ runner.temp }}/site
+
+  pages:
+    name: Deploy report to GitHub Pages
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: report
+          path: site
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4

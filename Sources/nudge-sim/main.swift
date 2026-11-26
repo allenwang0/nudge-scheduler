@@ -85,8 +85,9 @@ let results = Results(
 let outDir = URL(fileURLWithPath: options.out, isDirectory: true)
 try FileManager.default.createDirectory(at: outDir, withIntermediateDirectories: true)
 try Simulation.encode(results).write(to: outDir.appendingPathComponent("results.json"))
-try Report.html(results).write(to: outDir.appendingPathComponent("index.html"), atomically: true, encoding: .utf8)
-let card = Card.make(results, sha: gitHead(), command: "swift run -c release nudge-sim --seed \(options.seed) --out \(options.out)")
+let sha = gitHead()
+try Report.html(results, sha: sha).write(to: outDir.appendingPathComponent("index.html"), atomically: true, encoding: .utf8)
+let card = Card.make(results, sha: sha, command: "swift run -c release nudge-sim --seed \(options.seed) --out \(options.out)")
 let encoder = JSONEncoder()
 encoder.outputFormatting = [.sortedKeys, .prettyPrinted, .withoutEscapingSlashes]
 try encoder.encode(card).write(to: outDir.appendingPathComponent("card.json"))
